@@ -127,8 +127,8 @@ function search(dn,cb){
 }
 if (process.argv[2] == "--list"){
 Promise.all([
-	search("CN=Computers,DC=ad,DC=digital,DC=hbc,DC=com",addToLdapList),
-	search("OU=AnsibleRoles,DC=ad,DC=digital,DC=hbc,DC=com",addGroupMap)
+	search(config.search_dn,addToLdapList),
+	search(config.ansible_ou,addGroupMap)
 	])
 .then(function(result){
 	ldap_list.forEach(function (entry){

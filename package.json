@@ -1,0 +1,19 @@
+{
+  "name": "ansible-dynamic-inventory-ldap",
+  "version": "1.0.0",
+  "description": "Ansible LDAP inventory ---------------------- This script can be used to use LDAP as a source for your Ansible inventory. It is currently under development and available here for people who want to do something similar. Expect more updates later on.",
+  "main": "ldap_inv.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bunyan": "^1.8.12",
+    "ldapjs": "^1.0.2"
+  }
+}

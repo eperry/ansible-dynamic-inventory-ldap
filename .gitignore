@@ -1,0 +1,5 @@
+*ldap_inv.js.config
+ldap_inv.js.log
+node_modules
+.git
+

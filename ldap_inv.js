@@ -1,13 +1,25 @@
 #!/usr/bin/env node
+var path = require('path');
+var Logger = require('bunyan');
+var fs = require('fs');
 var inventory_list= { "_meta" : { 'hostvars': {} }}
 var ldap_list = []
-var group_map={'ungrouped':'ungrouped' }
+var group_names={'ungrouped':'ungrouped' }
 
+function checkPath(pathlist,file){
+	var p="";
+	for(i = 0; i < pathlist.length; i++) {
+		if(fs.existsSync(pathlist[i]) 
+			&& fs.existsSync(pathlist[i]+"/"+file)){
+			//console.log(pathlist[i]+"/"+file);
+			return pathlist[i]+"/"+file;
+		}
+	}
+	return false;
+}
 function addHostGroup (host,groupdn){
 }
 
-var Logger = require('bunyan');
-var fs = require('fs');
 // -------------------------------
 // Load Library for custom matcher
 // -------------------------------
@@ -15,7 +27,16 @@ var customMatch = require(__dirname+"/lib/CustomMatch.js")
 // -------------------------------
 // Load Config
 // -------------------------------
-var config = JSON.parse(fs.readFileSync(__filename+".ini", 'utf8'));
+var config_filename = path.basename(__filename) + ".config"
+var config_path = checkPath(['/etc/ansible',
+			      process.env.HOME+"/.ansible",
+			     './config',
+			     '.'], config_filename );
+if ( config_path === false ) {
+	process.stderr.write("config file $config_filename not found in config path");
+	process.stdout.write(JSON.stringify(inventory_list,undefined, 2))
+}
+var config = JSON.parse(fs.readFileSync(config_path, 'utf8'));
 if (config.default_logfile === undefined ) config['default_logfile'] = __filename+".log"
 var LOG = new Logger({
   name: 'ldapjs',
@@ -32,7 +53,7 @@ var ldap_opts = {
   attributes: ['cn',"memberof","operatingSystem"]
 };
 function addGroupMap(entry){
-	group_map[entry.dn]=entry.cn
+	group_names[entry.dn]=entry.cn
 }
 function addToLdapList(entry){
 	ldap_list.push(entry);
@@ -50,7 +71,7 @@ function addToInventoryList(entry){
 		// -----------------------------------------
 		//console.log(entry)
 		entry["memberOf"].forEach(function(m){
-			m= group_map[m]
+			m= group_names[m]
 			if ( typeof inventory_list[m] === 'undefined'){
 				inventory_list[m]={}
 				inventory_list[m].hosts=[]

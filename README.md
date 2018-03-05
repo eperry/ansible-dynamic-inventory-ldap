@@ -13,13 +13,15 @@ The way I have organized this.
 * Right now I don't support varibles, but I will probably load them from a directory. I am trying to prevent too many configurations in AD
 * also, I have created a lib CustomMatch.js  this creates groups based on the hostname. Our old standard would define the department, colocation site, QA|PRD|... , app name, instance and operating system all in the hostname. For better or worse I am supporting that syntax
 * Don't support children yet either.
+
+
 example output
 --------------
-
+* Config file ldap_inv.js.config  can be located in /etc/ansible/ $HOME/.ansible config or $PWD
 
 [bash]
 ```
-→ ~/ansible-dynamic-inventory/ldap_inv.js --list
+~/ansible-dynamic-inventory/ldap_inv.js --list
 ```
 
 ```

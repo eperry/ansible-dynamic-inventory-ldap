@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 var inventory_list= { "_meta" : { 'hostvars': {} }}
 var ldap_list = []
-var group_map={'ungrouped':'ungrouped'}
+var group_map={'ungrouped':'ungrouped' }
 
 function addHostGroup (host,groupdn){
 }
@@ -16,7 +16,7 @@ var customMatch = require(__dirname+"/lib/CustomMatch.js")
 // Load Config
 // -------------------------------
 var config = JSON.parse(fs.readFileSync(__filename+".ini", 'utf8'));
-if (config.default_logfile === undefined ) config.default_logfile = __filename+".log";
+if (config.default_logfile === undefined ) config['default_logfile'] = __filename+".log"
 var LOG = new Logger({
   name: 'ldapjs',
   component: 'client',
@@ -86,7 +86,10 @@ function search(dn,cb){
 		var ldap = require('ldapjs');
 		var client = ldap.createClient({
 		  url: config.url,
-		  log:LOG 
+		  log:LOG,
+		  tlsOptions:{
+			rejectUnauthorized: false
+		  }
 		});
 		client.bind(config.bind_username, config.bind_password, function(err) {
 		  if(err) {
@@ -127,7 +130,7 @@ function search(dn,cb){
 }
 if (process.argv[2] == "--list"){
 Promise.all([
-	search(config.search_dn,addToLdapList),
+	search(config.search_cn,addToLdapList),
 	search(config.ansible_ou,addGroupMap)
 	])
 .then(function(result){
@@ -136,11 +139,13 @@ Promise.all([
 	})
 } ,function(err){
 })
+.then(function(result){
+	process.stdout.write(JSON.stringify(inventory_list,undefined, 2))
+} ,function(err){
+})
 process.on('uncaughtException', function(err) {
     LOG.error(JSON.stringify(err));
+    console.log(JSON.stringify(inventory_list,undefined, 2))
 });}
-process.on("exit",() => {
-	console.log(JSON.stringify(inventory_list,undefined, 2))
-})
 
 

@@ -14,6 +14,7 @@
   "license": "ISC",
   "dependencies": {
     "bunyan": "^1.8.12",
-    "ldapjs": "^1.0.2"
+    "ldapjs": "^1.0.2",
+    "strip-json-comments": "^2.0.1"
   }
 }

@@ -4,24 +4,24 @@ This script can be used to use LDAP as a source for your Ansible inventory.
 It is currently under development and available here for people who want to
 do something similar. Expect more updates later on.
 
-Included is an LDIF export so you can get an idea of the LDAP structure.
+The way I have organized this.
 
-- All hosts are contained in a OU (ex hosts)
-- groups need to be groupOfNames
-- you can have a group inside a group. These wil be listed as children
-- The directory is extended with a custom schema created by @jpmens. The file
-  is included as ansible.schema.
+* Create a OU in your tree with called AnsibleRoles. In this OU Any Group defined here will be used by this script to define server roles.  Just add a server to this "role" and it will be dynamically used in the output
 
-Added a JS variaent as I understand Node better
+* update the ldap_inventory.config with this OU DN
+
+* Right now I don't support varibles, but I will probably load them from a directory. I am trying to prevent too many configurations in AD
+* also, I have created a lib CustomMatch.js  this creates groups based on the hostname. Our old standard would define the department, colocation site, QA|PRD|... , app name, instance and operating system all in the hostname. For better or worse I am supporting that syntax
+* Don't support children yet either.
 example output
 --------------
 
---list :
+
 [bash]
 ```
-→ ~/projects/ansible-ldap/inventory.py --list
+→ ~/ansible-dynamic-inventory/ldap_inv.js --list
 ```
-NOTE: children and vars are not impleneted yet but will be
+
 ```
 {
   "infrasrv": {
@@ -33,16 +33,12 @@ NOTE: children and vars are not impleneted yet but will be
   }, 
   "proxyservers": {
     "children": [
-      "webservers"
     ], 
     "hosts": [
       "host01", 
       "host02"
     ], 
     "vars": {
-      "ansible_ssh_port": "222", 
-      "jboss": "8080", 
-      "ssh_port": "222"
     }
   }, 
   "webservers": {

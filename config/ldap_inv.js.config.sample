@@ -1,5 +1,9 @@
 {
-  bind_username:"Administor",
-  bind_password:"MySecret Passwd"
+  "url":"ldaps://ad.example.com",
+  "bind_username":"userid",
+  "bind_password":"Password",
+  "search_cn": "CN=Computers,DC=ad,DC=example,DC=com",
+  "ansible_ou": "OU=AnsibleRoles,DC=ad,DC=example,DC=com"
+
 }
 
